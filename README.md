@@ -1,24 +1,93 @@
-# README
+# RailsとStrong Parameters
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 概要
+Rails4から導入された、ユーザーから送られてきた値を安全に取り扱うための仕組みです。
+予期していないパラメーターをはじくことができます。
 
-Things you may want to cover:
+## 例1(基本形)
+params.require(:user).permit(:name, :email)
 
-* Ruby version
+{
+  user: {
+    name: 'sample',
+    email: 'info@example.com'
+    introduction: 'sample' # 通過しない
+  }
+}
 
-* System dependencies
+## 例1_2(requireで指定したキーがなければエラー)
+params.require(:user).permit(:name, :email)
 
-* Configuration
+{
+  sp: {
+    name: 'sample',
+    email: 'info@example.com'
+  }
+}
 
-* Database creation
+## 例1_3(指定したキーがない場合にデフォルト値を設定)
+params.fetch(:user, {}).permit(:name, :email)
 
-* Database initialization
+{
+  sp: {
+    name: 'sample',
+    email: 'info@example.com'
+  }
+}
 
-* How to run the test suite
+## 例2(require無し系)
+params.permit(:name, :email)
+{
+  name: 'sample',
+  email: 'info@example.com'
+  user: {
+    name: 'sample',
+    email: 'info@example.com'
+  }
+}
 
-* Services (job queues, cache servers, search engines, etc.)
+## 例3(すべて許可, permit!)
+params.require(:user).permit!
 
-* Deployment instructions
+{
+  user: {
+    name: 'sample',
+    email: 'info@example.com',
+    introduction: 'sample'
+  }
+}
 
-* ...
+## 例4(配列を許可)
+params.require(:user).permit(:name, :email,
+  post_attributes: []
+)
+
+{
+  user: {
+    name: 'sample',
+    email: 'info@example.com',
+    post_attributes: ["1", "2", "3"]
+  }
+}
+
+## 例5(ネストしたパラメーターを許可)
+params.require(:user).permit(:name, :email,
+  post_attributes: [:id]
+)
+
+{
+  user: {
+    name: 'sample',
+    email: 'info@example.com',
+    post_attributes: {
+      "0": {
+        id: '123',
+        content: 'sample'
+      },
+      "1": {
+        id: '123',
+        content: 'sample'
+      }
+    }
+  }
+}

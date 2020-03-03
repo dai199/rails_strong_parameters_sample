@@ -1,0 +1,35 @@
+<h3>○例3(すべて許可, permit!)</h3>
+<h5>params.require(:user).permit!</h5>
+<%= form_with(model: @user, local: true, url: strong_parameters_3_path) do |form| %>
+  <div class="field">
+    <%= form.label :email %>
+    <%= form.text_field :email, value: 'info@example.com' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name, value: 'sample' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :introduction %>
+    <%= form.text_field :introduction, value: 'hogehoge' %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit 'submit' %>
+  </div>
+<% end %>
+
+<div class="container">
+  <div class="row">
+    <div class="col-6">
+      <h5>params</h5>
+      <%= debug(params.permit!) %>
+    </div>
+    <div class="col-6">
+      <h5>Strong Parameters通過後</h5>
+      <%= debug(@params) %>
+    </div>
+  </div>
+</div>
